@@ -2,27 +2,27 @@ from datetime import datetime
 
 import requests
 from airflow import DAG
-from airflow.models import Variables
+from airflow.sdk import Variable
 from airflow.operators.python import PythonOperator
 
 
 def train_model():
-    config = Variables.get("ml_retrain_pipeline_config", deserialize_json=True)
+    config = Variable.get("ml_retrain_pipeline_config", deserialize_json=True)
     model_version = config.get('MODEL_VERSION')
     print(f"Модель обучена: {model_version}")
 
 def evaluate_model():
-    config = Variables.get("ml_retrain_pipeline_config", deserialize_json=True)
+    config = Variable.get("ml_retrain_pipeline_config", deserialize_json=True)
     model_version = config.get('MODEL_VERSION')
     print(f"Модель оценена, метрики в норме: {model_version}")
 
 def deploy_model():
-    config = Variables.get("ml_retrain_pipeline_config", deserialize_json=True)
+    config = Variable.get("ml_retrain_pipeline_config", deserialize_json=True)
     model_version = config.get('MODEL_VERSION')
     print(f"Модель выведена в продакшен: {model_version}")  
 
 def send_telegram_message():
-    config = Variables.get("ml_retrain_pipeline_config", deserialize_json=True)
+    config = Variable.get("ml_retrain_pipeline_config", deserialize_json=True)
     token = config.get("TELEGRAM_TOKEN")
     chat_id = config.get("TELEGRAM_CHAT_ID")
     model_version = config.get('MODEL_VERSION')
