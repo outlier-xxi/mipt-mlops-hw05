@@ -24,7 +24,8 @@ jobs:
               -o StrictHostKeyChecking=no \
               -o UserKnownHostsFile=~/.ssh/known_hosts \
               dags/ml_retrain_pipeline.py \
-              ${{ secrets.ANSIBLE_USER }}@${{ secrets.AIRFLOW_SERVER_1 }}:/opt/airflow/dags/ml_retrain_pipeline.py
+              ${{ secrets.ANSIBLE_USER }}@${{ secrets.AIRFLOW_SERVER_1 }}:~/deploy/dags/ml_retrain_pipeline.py
+          sudo cp ~/deploy/dags/ml_retrain_pipeline.py ${{ vars.AIRFLOW_DAGS_DIR }}/ml_retrain_pipeline.py
 
       - name: Set file permissions
         uses: appleboy/ssh-action@v1
@@ -34,7 +35,8 @@ jobs:
           key: ${{ secrets.SSH_KEY_ANSIBLE }}
           port: 22
           script: |
-            chmod 644 /opt/airflow/dags/ml_retrain_pipeline.py
-            ls -lh /opt/airflow/dags/ml_retrain_pipeline.py
-            echo "DAG deployed to /opt/airflow/dags/ml_retrain_pipeline.py"
+            sudo chown ${{ secrets.AIRFLOW_USER }}:${{ secrets.AIRFLOW_GROUP }} ${{ vars.AIRFLOW_DAGS_DIR }}/ml_retrain_pipeline.py
+            sudo chmod 644 ${{ vars.AIRFLOW_DAGS_DIR }}/ml_retrain_pipeline.py
+            ls -lh ${{ vars.AIRFLOW_DAGS_DIR }}/ml_retrain_pipeline.py
+            echo "DAG deployed to ${{ vars.AIRFLOW_DAGS_DIR }}/ml_retrain_pipeline.py"
 
