@@ -3,7 +3,7 @@ from datetime import datetime
 import requests
 from airflow import DAG
 from airflow.sdk import Variable
-from airflow.operators.python import PythonOperator
+from airflow.providers.standard.operators.python import PythonOperator
 
 
 def train_model():
@@ -28,8 +28,11 @@ def send_telegram_message():
     model_version = config.get('MODEL_VERSION')
 
     message = f"Новая модель в продакшене! Версия {model_version}"
-    requests.get(f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text={message}")
-
+    print(f"Отправка сообщения в Telegram: {message}")
+    response = requests.get(
+        f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text={message}"
+    )
+    print(f"Результат отправки: {response.json()}")
 
 with DAG(
     dag_id="ml_retrain_pipeline",
