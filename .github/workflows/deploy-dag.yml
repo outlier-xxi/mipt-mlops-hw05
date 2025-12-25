@@ -1,0 +1,40 @@
+name: Deploy Airflow DAG
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY_ANSIBLE }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.AIRFLOW_SERVER_1 }} >> ~/.ssh/known_hosts || true
+
+      - name: Deploy DAG file
+        run: |
+          scp -i ~/.ssh/deploy_key \
+              -o StrictHostKeyChecking=no \
+              -o UserKnownHostsFile=~/.ssh/known_hosts \
+              dags/ml_retrain_pipeline.py \
+              ${{ vars.ANSIBLE_USER }}@${{ secrets.AIRFLOW_SERVER_1 }}:/opt/airflow/dags/ml_retrain_pipeline.py
+
+      - name: Set file permissions
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.AIRFLOW_SERVER_1 }}
+          username: ${{ vars.ANSIBLE_USER }}
+          key: ${{ secrets.SSH_KEY_ANSIBLE }}
+          port: 22
+          script: |
+            chmod 644 /opt/airflow/dags/ml_retrain_pipeline.py
+            ls -lh /opt/airflow/dags/ml_retrain_pipeline.py
+            echo "DAG deployed to /opt/airflow/dags/ml_retrain_pipeline.py"
+

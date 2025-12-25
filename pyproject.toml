@@ -1,0 +1,7 @@
+[project]
+name = "ml-ops-hw05"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "apache-airflow~=3.1.5",
+]
