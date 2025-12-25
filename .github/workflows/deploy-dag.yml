@@ -18,6 +18,16 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.AIRFLOW_SERVER_1 }} >> ~/.ssh/known_hosts || true
 
+      - name: Deploy directory
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.AIRFLOW_SERVER_1 }}
+          username: ${{ secrets.ANSIBLE_USER }}
+          key: ${{ secrets.SSH_KEY_ANSIBLE }}
+          port: 22
+          script: |
+              mkdir -p ~/deploy/dags
+
       - name: Deploy DAG file
         run: |
           scp -i ~/.ssh/deploy_key \
