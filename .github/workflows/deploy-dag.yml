@@ -24,13 +24,13 @@ jobs:
               -o StrictHostKeyChecking=no \
               -o UserKnownHostsFile=~/.ssh/known_hosts \
               dags/ml_retrain_pipeline.py \
-              ${{ vars.ANSIBLE_USER }}@${{ secrets.AIRFLOW_SERVER_1 }}:/opt/airflow/dags/ml_retrain_pipeline.py
+              ${{ secrets.ANSIBLE_USER }}@${{ secrets.AIRFLOW_SERVER_1 }}:/opt/airflow/dags/ml_retrain_pipeline.py
 
       - name: Set file permissions
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.AIRFLOW_SERVER_1 }}
-          username: ${{ vars.ANSIBLE_USER }}
+          username: ${{ secrets.ANSIBLE_USER }}
           key: ${{ secrets.SSH_KEY_ANSIBLE }}
           port: 22
           script: |
