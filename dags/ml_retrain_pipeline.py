@@ -34,7 +34,7 @@ def send_telegram_message():
 with DAG(
     dag_id="ml_retrain_pipeline",
     start_date=datetime(2025, 12, 20),
-    schedule_interval="@daily",
+    schedule="@daily",
     catchup=False,
     
 ) as dag:
