@@ -46,7 +46,7 @@ with DAG(
     # train_model = PythonOperator(task_id="train_model", python_callable=train_model)
     train_model = DockerOperator(
         task_id="train_model", 
-        image="ghcr.io/$outlier-xxi/ml-retrain:latest", 
+        image="ghcr.io/outlier-xxi/ml-retrain:latest", 
         command="python src/tasks/train_model.py"
     )
     evaluate = PythonOperator(task_id="evaluate_model", python_callable=evaluate_model)
