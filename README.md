@@ -9,12 +9,19 @@
 
 ## Архитектура
 
+Projects:
+
 ```mermaid
 flowchart LR
-    Client([Client]) --> ML[ML Service<br/>:8000]
-    ML --> |metrics :8001| Prometheus[(Prometheus<br/>:9090)]
-    Prometheus --> Grafana[Grafana<br/>:3000]
-    Grafana --> |alerts| Telegram([Telegram])
+    Airflow_Repo([mipt-mlops-airflow<br>repository]) --> |Deploy Airflow<br>Github Actions| Airflow[Airflow Server]
+    DAG_Repo([mipt-mlops-hw05<br>repository]) --> |Deploy DAG<br>Github Actions| Airflow[Airflow Server]
+```
+
+DAG:
+
+```mermaid
+flowchart LR
+    train_model --> evaluate --> deploy --> notify_success
 ```
 
 ## Структура проекта
