@@ -4,12 +4,13 @@ import requests
 from airflow import DAG
 from airflow.sdk import Variable
 from airflow.providers.standard.operators.python import PythonOperator
+from airflow.providers.docker.operators.docker import DockerOperator
 
 
-def train_model():
-    config = Variable.get("ml_retrain_pipeline_config", deserialize_json=True)
-    model_version = config.get('MODEL_VERSION')
-    print(f"Модель обучена: {model_version}")
+#def train_model():
+#    config = Variable.get("ml_retrain_pipeline_config", deserialize_json=True)
+#    model_version = config.get('MODEL_VERSION')
+#    print(f"Модель обучена: {model_version}")
 
 def evaluate_model():
     config = Variable.get("ml_retrain_pipeline_config", deserialize_json=True)
@@ -42,7 +43,12 @@ with DAG(
     
 ) as dag:
 
-    train = PythonOperator(task_id="train_model", python_callable=train_model)
+    # train_model = PythonOperator(task_id="train_model", python_callable=train_model)
+    train_model = DockerOperator(
+        task_id="train_model", 
+        image="ghcr.io/$outlier-xxi/ml-retrain:latest", 
+        command="python src/tasks/train_model.py"
+    )
     evaluate = PythonOperator(task_id="evaluate_model", python_callable=evaluate_model)
     deploy = PythonOperator(task_id="deploy_model", python_callable=deploy_model)
     notify_success = PythonOperator(
@@ -50,4 +56,4 @@ with DAG(
         python_callable=send_telegram_message
     )
 
-    train >> evaluate >> deploy >> notify_success
+    train_model >> evaluate >> deploy >> notify_success
