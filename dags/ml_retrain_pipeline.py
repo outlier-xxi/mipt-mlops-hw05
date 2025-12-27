@@ -47,7 +47,9 @@ with DAG(
     train_model = DockerOperator(
         task_id="train_model", 
         image="ghcr.io/outlier-xxi/ml-retrain:latest", 
-        command="python src/tasks/train_model.py"
+        command="python src/tasks/train_model.py",
+        docker_conn_id="ghcr.io",    # Airflow connection to GHCR
+        image_pull_policy="Always",
     )
     evaluate = PythonOperator(task_id="evaluate_model", python_callable=evaluate_model)
     deploy = PythonOperator(task_id="deploy_model", python_callable=deploy_model)
