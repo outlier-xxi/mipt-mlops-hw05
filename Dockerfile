@@ -2,11 +2,16 @@
 
 FROM ghcr.io/astral-sh/uv:python3.12-bookworm
 
+# Build arguments
+ARG MODEL_VERSION=v1.0.0
+
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
     UV_PYTHON_DOWNLOADS=0 \
     PYTHONUNBUFFERED=1 \
-    PYTHONPATH=/app
+    PYTHONPATH=/app \
+    MODEL_VERSION=${MODEL_VERSION} \
+    MODEL_PATH=/app/models/model.pkl
 
 WORKDIR /app
 
@@ -24,3 +29,6 @@ COPY ./uv.lock /app/uv.lock
 # Project layer
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev
+
+# Create models directory
+RUN mkdir -p /app/models
