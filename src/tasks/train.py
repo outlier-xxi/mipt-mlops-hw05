@@ -41,7 +41,9 @@ def main():
     # Scale features
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
-    
+    X_test_scaled = scaler.transform(X_test)
+    logger.info("Features scaled for both train and test sets")
+
     # Train model (same configuration as ml-ops-hw01)
     logger.info("Training LogisticRegression model...")
     model = LogisticRegression(
@@ -51,7 +53,12 @@ def main():
         class_weight='balanced'
     )
     model.fit(X_train_scaled, y_train)
-    
+
+    # Log training accuracy for sanity check
+    train_pred = model.predict(X_train_scaled)
+    train_accuracy = (train_pred == y_train).mean()
+    logger.info(f"Training accuracy: {train_accuracy:.4f}")
+
     # Save model artifacts
     Path(settings.model_path).parent.mkdir(parents=True, exist_ok=True)
     
@@ -61,8 +68,8 @@ def main():
         'feature_names': list(X.columns),
         'target_names': list(wine.target_names),
         'version': settings.model_version,
-        'X_test': X_test,
-        'y_test': y_test,
+        'random_state': settings.random_state,
+        'test_size': settings.test_size,
     }
     
     joblib.dump(artifacts, settings.model_path)
