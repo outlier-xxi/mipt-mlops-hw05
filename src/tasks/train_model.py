@@ -23,7 +23,7 @@ def main():
     logger.info(f"Test Size: {settings.test_size}")
     
     # Load wine dataset from sklearn (similar to WineQT)
-    logger.info("\nLoading wine dataset...")
+    logger.info("Loading wine dataset...")
     wine = load_wine()
     X = pd.DataFrame(wine.data, columns=wine.feature_names)
     y = pd.Series(wine.target, name="quality")
@@ -36,14 +36,14 @@ def main():
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=settings.test_size, random_state=settings.random_state, stratify=y
     )
-    logger.info(f"\nTrain size: {len(X_train)}, Test size: {len(X_test)}")
+    logger.info(f"Train size: {len(X_train)}, Test size: {len(X_test)}")
     
     # Scale features
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     
     # Train model (same configuration as ml-ops-hw01)
-    logger.info("\nTraining LogisticRegression model...")
+    logger.info("Training LogisticRegression model...")
     model = LogisticRegression(
         max_iter=1000,
         random_state=settings.random_state,
@@ -51,17 +51,6 @@ def main():
         class_weight='balanced'
     )
     model.fit(X_train_scaled, y_train)
-    
-    # Evaluate
-    # y_pred = model.predict(X_test_scaled)
-    # accuracy = accuracy_score(y_test, y_pred)
-    # balanced_acc = balanced_accuracy_score(y_test, y_pred)
-    
-    # logger.info("\n Model Evaluation")
-    # logger.info(f"Accuracy: {accuracy:.4f}")
-    # logger.info(f"Balanced Accuracy: {balanced_acc:.4f}")
-    # logger.info("\nClassification Report:")
-    # logger.info(classification_report(y_test, y_pred, target_names=wine.target_names, zero_division=0))
     
     # Save model artifacts
     Path(settings.model_path).parent.mkdir(parents=True, exist_ok=True)
@@ -72,6 +61,8 @@ def main():
         'feature_names': list(X.columns),
         'target_names': list(wine.target_names),
         'version': settings.model_version,
+        'X_test': X_test,
+        'y_test': y_test,
     }
     
     joblib.dump(artifacts, settings.model_path)
