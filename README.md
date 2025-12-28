@@ -3,9 +3,11 @@
 ДЗ-5. Airflow
 
 - Деплой Airflow
-  - Репозиторий: https://github.com/outlier-xxi/mipt-mlops-airflow
-  - GitHub Actions Deploy: https://github.com/outlier-xxi/mipt-mlops-airflow/actions
-
+  - Дополнительный репозиторий: https://github.com/outlier-xxi/mipt-mlops-airflow
+  - Деплой Airflow Server выполняется с помощью GitHub Actions на внешнюю ВМ: https://github.com/outlier-xxi/mipt-mlops-airflow/actions
+- Деплой DAG
+  - Текущий репозиторий: https://github.com/outlier-xxi/mipt-mlops-hw05
+  - Деплой DAG выполняется с помощью GitHub Actions на Airflow Server: https://github.com/outlier-xxi/mipt-mlops-hw05/actions
 
 ## Архитектура
 
